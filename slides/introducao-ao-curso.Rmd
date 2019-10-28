@@ -1,0 +1,315 @@
+---
+title: "Introdução à programação em R"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '20%'>"
+date: ""
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "css/custom-intro.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: middle, center
+
+# Sobre a Curso-R
+
+---
+
+## Curso-R
+
+<img src="img/professores.png" style=" display: block; margin-left: auto; margin-right: auto;"></img>
+
+---
+
+## Linha do tempo
+
+<center>
+<img src="img/linha_do_tempo.jpg" width = 45%></img>
+</center>
+
+---
+class: middle, center
+
+# Sobre o curso
+
+---
+
+## Conteúdo
+
+- Introdução ao R
+
+- Importação de dados
+
+- Manipulação de dados
+
+- Visualização de dados
+
+- Comunicação
+   
+---
+## Introdução ao R
+
+.pull-left[
+<br>
+- R e RStudio
+
+- Trabalhando com projetos
+
+- Objetos e funções
+
+- Pacotes
+]
+
+.pull-right[
+<img src="img/arte_comunidade.png">
+]
+
+---
+## Importação
+
+.pull-left[
+<br>
+- Arquivos de texto
+
+- Arquivos do excel
+
+- Arquivos de outros softwares (SAS, SPSS)
+
+- Conexão com banco de dados
+]
+
+.pull-right[
+<br>
+<img src="img/arte_janitor.png">
+]
+
+---
+## Manipulação
+
+.pull-left[
+<br>
+- Selecionar colunas
+
+- Filtrar linhas
+
+- Criar ou modificar colunas
+
+- Agrupar e sumarizar
+
+- Juntar tabelas
+]
+
+.pull-right[
+<img src="img/arte_dplyr.png">
+]
+
+---
+## Visualização
+
+<center>
+<img src="img/arte_ggplot2.png" width = 80%>
+</center>
+
+---
+## Comunicação
+
+- Relatórios automatizados
+- Dashboards estáticos
+
+<center>
+<img src="img/arte_rmarkdown.png" width = 70%>
+</center>
+
+---
+
+## Material
+
+<center>
+
+<br>
+
+Temos um material em português disponível nesta página:
+
+<br>
+
+<a href='https://curso-r.com/material'>https://curso-r.com/material</a>
+
+<br>
+<br>
+
+Também temos um blog: 
+
+<br>
+
+<a href='http://curso-r.com/blog/'>http://curso-r.com/blog/ </a>
+
+</center>
+
+<a href="https://www.curso-r.com/blog/2019-07-15-comunidade/">
+<img src="img/post-comunidade.png" style="position: fixed; bottom: 80px; left: 180px" width = 170px height = 280px></img>
+</a>
+
+<a href="https://www.curso-r.com/blog/2017-07-29-segundo-menor-dl/">
+<img src="img/post-deep-learning.png" style="position: fixed; bottom: 78px; left: 380px" width = 170px height = 275px></img>
+</a>
+
+<a href="https://www.curso-r.com/blog/2017-05-01-as-paletas-de-cores-da-marvel-vs-dc/">
+<img src="img/post-marvel.png" style="position: fixed; bottom: 82px; left: 570px" width = 170px height = 277px></img>
+</a>
+
+---
+
+## Referência
+
+<br>
+<center>
+<a href = "https://r4ds.had.co.nz">
+<img src="img/r4ds.png" width = 40%> 
+</a>
+</center>
+
+---
+class: middle, center
+
+# Introdução: por que programar?
+
+---
+class: middle, center
+
+## O computador é a ferramenta do cientista de dados
+
+---
+class: middle, center
+
+## Precisamos nos comunicar com o computador
+
+<img src="img/diagrama-programacao.png" style="display: block; margin-left: auto; margin-right: auto; width: 70%"> 
+
+---
+class: middle, center
+## O código é texto
+
+### Podemos copiar e colar
+
+<img src="img/copy-paste.png" style="width: 70%">
+
+---
+## O código documenta a nossa análise
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(magrittr)
+library(magick)
+library(ggplot2)
+library(dplyr)
+library(viridis)
+```
+
+```{r, eval = FALSE}
+image_read("https://jeroen.github.io/images/frink.png") %>%
+  image_rotate(270) %>%
+  image_background("blue", flatten = TRUE) %>%
+  image_border("red", "10x10") %>%
+  image_annotate("Linguagens de programação ainda\nsão linguagens!", 
+                 color = "white", size = 30)
+```
+
+--
+
+.pull-left[
+<img src = "https://jeroen.github.io/images/frink.png" style="width:35%">
+]
+
+--
+
+.pull-right[
+```{r, eval = TRUE, echo = FALSE}
+image_read("https://jeroen.github.io/images/frink.png") %>%
+  image_rotate(270) %>%
+  image_background("blue", flatten = TRUE) %>%
+  image_border("red", "10x10") %>%
+  image_annotate("Linguagens de programação ainda\nsão linguagens!", 
+                 color = "white", size = 30)
+```
+]
+
+
+---
+# Código é aberto
+
+Todas as linguagens de programação modernas são livres e abertas:
+
+- Estudantes podem usar as mesmas ferramentas que os profissionais.
+
+- Todos podem usar as melhores ferramentas independentemente do poder financeiro.
+
+- O código facilita a reprodutibilidade das análises.
+
+- Você pode corrigir problemas.
+
+- Você pode desenvolver suas próprias ferramentas.
+
+---
+class: middle, center
+
+# Por que utilizar o R?
+
+---
+
+## O ciclo da ciência de dados
+
+<img src="img/ciclo-ciencia-de-dados.png" style = "display: block; margin-left: auto; margin-right: auto;">
+
+---
+
+## O ciclo da ciência de dados com o R
+
+<img src="img/ciclo-ciencia-de-dados-pacotes.png" style = "display: block; margin-left: auto; margin-right: auto;">
+
+---
+class: middle, center
+
+# Informações importantes
+
+---
+# Aprendizado
+
+### O objetivo do curso é ajudar a quebrar inércia da etapa inicial de aprendizado. Assim como um idioma, o único jeito de aprender uma linguagem de programação é praticando.
+
+<img src="https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif" style = "display: block; margin-left: auto; margin-right: auto;">
+
+---
+# Pedindo ajuda
+
+.pull-left[
+<br>
+- Documentação do R
+
+- Google
+
+- Stack Overflow
+]
+
+.pull-right[
+<img src="img/stack.png">
+]
+
+---
+# Regras, boas práticas e estilo
+
+<br>
+
+- Regras: devem ser seguidas para o código funcionar (sintaxe, vocabulário)
+
+- Boas práticas: recomenda-se seguir para a criação de códigos legíveis (espaçamento, nomes, organização)
+
+- Estilo: cada um pode escolher aquele com o qual se sentir mais à vontade (tipos de indentação, formatação)
+
+
+---
+class: middle, center
+
+# Vamos ao R!
+
+
