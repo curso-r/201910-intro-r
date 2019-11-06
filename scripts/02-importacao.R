@@ -1,4 +1,6 @@
 library(tidyverse)
+library(readr)
+install.packages("readr")
 
 # Caminhos até o arquivo --------------------------------------------------
 
@@ -12,14 +14,19 @@ getwd()
 
 # Arquivos de texto
 imdb <- read_csv(file = "dados/imdb.csv")
+#read.csv
+
+View(imdb)
+
 imdb2 <- read_csv2(file = "dados/imdb2.csv")
 
-imdb2 <- read_delim("dados/imdb.csv", delim = ",")
+imdb2 <- read_delim("dados/imdb.csv", delim = "\t")
 
-
+rio::import("")
 
 # Excel
 library(readxl)
+install.packages("readxl")
 imdb_excel <- read_excel("dados/imdb.xlsx")
 
 
@@ -34,11 +41,10 @@ imdb_sqlite <- tbl(conexao, "imdb")
 imdb_select <- tbl(conexao, sql("SELECT titulo, ano, diretor FROM imdb"))
 
 # trazer para a memória
-collect(imdb_sqlite)
+imdb_sql <- collect(imdb_sqlite)
 collect(imdb_select)
 
 # Mais informações: db.rstudio.com
-
 
 
 # Outros formatos
@@ -54,6 +60,8 @@ imdb_spss <- read_spss("dados/imdb.sav")
 
 # Gravando dados------------------------------------------------------------
 
+print.AsIs()
+
 # As funções iniciam com 'write'
 
 # csv
@@ -64,4 +72,42 @@ library(writexl)
 write_xlsx(imdb, path = "imdb.xlsx")
 
 # rds
-write_rds(imdb, path = "imdb.rds")
+write_rds(imdb, path = "imdb.rds", compress = "gz")
+read_rds()
+
+
+# Exemplo várias bases ----------------------------------------------------
+
+arquivos <- list.files("dados/por_ano/", full.names = TRUE)
+
+read_rds(arquivos[1])
+read_rds(arquivos[2])
+read_rds(arquivos[3])
+read_rds(arquivos[4])
+
+library(purrr)
+
+map_dfr(arquivos, read_rds)
+
+# Exercício ---------------------------------------------------------------
+
+library(readxl)
+
+imdb_nomes_colunas <- 
+  read_excel("exercicios/imdb_exercicio.xlsx")
+
+imdb <- read_excel(
+  path = "exercicios/imdb_exercicio.xlsx",
+  sheet = 2,
+  skip = 4,
+  col_names = FALSE,
+  n_max = 3713
+)
+
+colnames(imdb) <- imdb_nomes_colunas$nome
+
+
+
+
+
+
