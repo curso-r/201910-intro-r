@@ -1,0 +1,26 @@
+---
+title: "Untitled"
+author: "William amorim"
+date: "11/11/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+TEXTO 1
+```{r}
+2
+```
+TEXTO 3
+
+```{r}
+3
+```
+
+TEXTO 2
+```{r}
+4
+```
+

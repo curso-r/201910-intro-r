@@ -1,0 +1,61 @@
+---
+title: "Meu primeiro dash"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+bit.ly/
+
+contato@curso-r.com
+wamorim@curso-r.com
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(knitr)
+```
+
+Column
+----------------------------
+
+### Meu gráfico
+
+```{r}
+imdb <- read_rds("dados/imdb.rds")
+
+imdb %>% 
+  ggplot() +
+  geom_point(aes(x = orcamento, y = receita))
+```
+
+Column
+-----------------------------
+
+### Exemplo
+
+Column {.tabset}
+-----------------------------------------------------------------------
+
+### Minha tabela
+
+```{r}
+imdb %>% 
+  count(diretor, sort = TRUE) %>% 
+  filter(!is.na(diretor)) %>% 
+  top_n(10, n) %>% 
+  kable()
+```
+
+### Chart C
+
+TEXTO TEXTO TEXTO
+
+```{r}
+
+```
+
+### Terceiro da segunda coluna
+
+

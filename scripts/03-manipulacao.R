@@ -1,6 +1,7 @@
 # Pacotes -----------------------------------------------------------------
 
 library(tidyverse)
+library(dplyr)
 
 # Base de dados -----------------------------------------------------------
 
@@ -314,22 +315,43 @@ View(acao_comedia_bom)
 
 # exemplo 1
 
-imdb %>% mutate(duracao = duracao/60)
+imdb %>% mutate(duracao = duracao/60) %>% View()
 
 # exemplo 2
 
-imdb %>% mutate(duracao_horas = duracao/60)
+imdb %>% 
+  mutate(duracao_horas = duracao/60) %>% 
+  #select(duracao, duracao_horas) %>% 
+  View()
 
 # exercício 1
-# Crie uma variável chamada lucro. Salve em um objeto chamado imdb_lucro.
+# Crie uma variável chamada lucro. 
+# Salve em um objeto chamado imdb_lucro.
+
+imdb_lucro <- imdb %>% 
+  mutate(lucro = receita - orcamento)
 
 # exercicio 2
-# Modifique a variável lucro para ficar na escala de milhões de dólares.
+# Modifique a variável lucro para ficar na 
+# escala de milhões de dólares.
+
+imdb_lucro <- imdb_lucro %>% 
+  mutate(lucro = lucro/1e6)
+
+View(imdb_lucro)
+
+imdb_lucro %>% rename(lucro_em_milhoes = lucro) %>% View()
 
 # exercício 3
 # Filtre apenas os filmes com prejuízo maior do que 3 milhões de dólares. 
 # Deixe essa tabela ordenada com o maior prejuízo primeiro. Salve o resultado em 
 # um objeto chamado filmes_prejuizo.
+
+imdb_lucro %>% 
+  filter(lucro < -3) %>%
+  arrange(lucro) %>% 
+  summarise(lucro_medio = mean(lucro, na.rm  = TRUE)) %>% 
+  View()
 
 # exemplo 3
 # gêneros
@@ -349,6 +371,7 @@ gender("Matheus", years = 2012)
 
 # Base com o gênero dos diretores
 imdb_generos <- read_rds("dados/imdb_generos.rds")
+View(imdb_generos)
 
 # Pacote análogo para nomes brasileiros
 # https://github.com/meirelesff/genderBR
@@ -357,58 +380,139 @@ imdb_generos <- read_rds("dados/imdb_generos.rds")
 
 # exemplo 1
 
-imdb %>% summarise(media_orcamento = mean(orcamento, na.rm = TRUE))
+imdb_sumarizado <- imdb %>% 
+  summarise(
+    media_orcamento = mean(orcamento, na.rm = TRUE)
+  )
+
+View(imdb_sumarizado)
 
 # exemplo 2
 
 imdb %>% summarise(
   media_orcamento = mean(orcamento, na.rm = TRUE),
   mediana_orcamento = median(orcamento, na.rm = TRUE),
-  qtd = n(),
-  qtd_diretores = n_distinct(diretor)
-)
+  numero_de_filmes = n(),
+  numero_de_diretores = n_distinct(diretor)
+) %>% 
+  View()
 
 # exemplo 3
 
 imdb_generos %>%
-  summarise(n_diretora = sum(genero == "female", na.rm = TRUE))
+  summarise(
+    n_diretora = sum(genero == "female", na.rm = TRUE)
+  )
+
+imdb_generos %>%
+  summarise(
+    n_diretora = mean(genero == "female", na.rm = TRUE)
+  )
+
+as.numeric(imdb_generos$genero == "female")
 
 # exercício 1
-# Use o `summarise` para calcular a proporção de filmes com diretoras.
+# Use o `summarise` para calcular a proporção 
+# de filmes com diretoras.
+
+imdb_generos %>% 
+  summarise(
+    prop_diretoras = mean(genero == "female", na.rm = TRUE)
+  )
 
 # exercício 2
 # Calcule a duração média e mediana dos filmes da base.
 
+imdb %>% 
+  summarise(
+    duracao_media = mean(duracao, na.rm = TRUE),
+    duracao_mediana = median(duracao, na.rm = TRUE)
+  )
+
 # exercício 3
-# Calcule o lucro médio dos filmes com duracao < 60 minutos. E o lucro médio dos filmes com
+# Calcule o lucro médio dos filmes com duracao < 60 minutos. 
+# E o lucro médio dos filmes com
 # mais de 2 horas.
+
+imdb %>% 
+  filter(duracao < 60) %>% 
+  mutate(lucro = receita - orcamento) %>% 
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE))
+
+imdb %>% 
+  filter(duracao > 120) %>% 
+  mutate(lucro = receita - orcamento) %>% 
+  summarise(lucro_medio = mean(lucro, na.rm = TRUE))
+
+imdb_lucro %>% 
+  summarise(
+    lucro_medio_curtos = mean(lucro[duracao < 60], na.rm = TRUE),
+    lucro_medio_longos = mean(lucro[duracao > 120], na.rm = TRUE)
+  )
 
 # group_by + summarise ----------------------------------------------------
 
 # exemplo 1
 
-imdb %>% group_by(ano)
+imdb %>% 
+  group_by(ano)
 
 # exemplo 2
 
 imdb %>% 
   group_by(ano) %>% 
-  summarise(qtd_filmes = n())
+  summarise(qtd_filmes = n()) %>% 
+  View()
 
 # exemplo 3
 
 imdb %>% 
   group_by(diretor) %>% 
-  summarise(qtd_filmes = n())
+  summarise(qtd_filmes = n()) %>% 
+  View()
+
 
 # exercício 1
-# Crie uma tabela com apenas o nome dos diretores com mais de 10 filmes.
+# Crie uma tabela com apenas o nome dos 
+# diretores com mais de 10 filmes.
+
+imdb %>% 
+  group_by(diretor) %>% 
+  summarise(
+    num_filmes = n()
+  ) %>% 
+  filter(num_filmes > 10, !is.na(diretor)) %>% 
+  arrange(num_filmes)
 
 # exercício 2
-# Crie uma tabela com a receita média e mediana dos filmes por ano.
+# Crie uma tabela com a receita média 
+# e mediana dos filmes por ano.
+
+imdb %>% 
+  group_by(ano) %>% 
+  summarise(
+    num_filmes = n(),
+    receita_media = mean(receita, na.rm = TRUE),
+    receita_mediana = median(receita, na.rm = TRUE)
+  ) %>%
+  filter(
+    !is.na(receita_media),
+    !is.na(receita_mediana)
+  )
+
+mean(c(NA, NA, NA), na.rm = TRUE)
+median(c(NA, NA), na.rm = TRUE)
+sum(c(NA,NA,NA), na.rm = TRUE)
 
 # exercício 3
-# Crie uma tabela com a nota média do imdb dos filmes por tipo de classificacao.
+# Crie uma tabela com a nota média do 
+# imdb dos filmes por classificacao etária.
+
+imdb %>% 
+  group_by(classificacao) %>% 
+  summarise(
+    nota_media = mean(nota_imdb, na.rm = TRUE)
+  )
 
 # exemplo 4
 
@@ -416,23 +520,47 @@ imdb %>%
   filter(str_detect(generos, "Action"), !is.na(diretor)) %>%
   group_by(diretor) %>%
   summarise(qtd_filmes = n()) %>%
-  arrange(desc(qtd_filmes))
+  arrange(desc(qtd_filmes)) %>% View()
 
 # exemplo 5
 
 imdb %>% 
   filter(ator_1 %in% c("Brad Pitt", "Angelina Jolie Pitt")) %>%
   group_by(ator_1) %>%
-  summarise(orcamento = mean(orcamento), receita = mean(receita), qtd = n())
+  summarise(
+    orcamento = mean(orcamento), 
+    receita = mean(receita), 
+    qtd = n()
+  ) %>% View()
 
 # left join ---------------------------------------------------------------
 
 # exemplo 1
 
+imdb %>% View
+View(imdb_generos)
+
+imdb_generos2 <- imdb_generos %>% 
+  rename(diretor_2 = diretor)
+
+imdb_completa <- left_join(
+  imdb, 
+  imdb_generos2, 
+  by = c("diretor" = "diretor_2", "ano")
+)
+
 imdb_completa <- imdb %>%
   left_join(imdb_generos, by = c("diretor", "ano"))
 
 View(imdb_completa)
+
+left_join(
+  imdb, 
+  imdb_generos, 
+  by = "diretor"
+) %>% View()
+
+bind_cols(mtcars, mtcars) %>% View()
 
 # exemplo 2
 
@@ -441,17 +569,79 @@ depara_cores <- tibble(
   cor2 = c("colorido", "pretoEbranco")
 )
 
-imdb_cor <- left_join(imdb, depara_cores, by = c("cor"))
+View(imdb)
+
+imdb_cor <- left_join(
+  imdb, 
+  depara_cores, 
+  by = c("cor")
+)
+
+View(depara_cores)
+
+View(imdb_cor)
 
 # exercicio 1
-# Calcule a média dos orçamentos e receitas para filmes feitos por
+# Calcule a média dos orçamentos e 
+# receitas para filmes feitos por
 # gênero do diretor.
+
+imdb %>% 
+  left_join(
+    imdb_generos,
+    by = c("diretor", "ano")
+  ) %>% 
+  group_by(genero) %>% 
+  summarise(
+    orcamento_medio = mean(orcamento, na.rm = TRUE),
+    receita_media = mean(receita, na.rm = TRUE)
+  ) %>% 
+  filter(!is.na(genero)) %>% 
+  View()
+
+ler_bases <- function(path) {
+  read_delim(path, delim = "\t") %>% 
+    mutate(arquivo = path)
+}
+
+base_completa <- map_dfr(files, ler_bases)
+
+base_completa %>% 
+  select(gene, tpm, arquivo) %>%
+  spread(arquivo, tpm)
 
 # gather ------------------------------------------------------------------
 
+imdb_simples <- imdb %>% 
+  select(titulo, starts_with("ator")) %>% 
+  slice(1:3)
+
+View(imdb_simples)
+
 # exemplo 1
 
-imdb_gather <- gather(imdb, "importancia_ator", "nome_ator", starts_with("ator"))
+imdb_gather <- gather(
+  imdb_simples, 
+  "importancia_ator", 
+  "nome_ator", 
+  starts_with("ator")
+)
+
+imdb_gather <- gather(
+  imdb, 
+  "importancia_ator", 
+  "nome_ator", 
+  starts_with("ator")
+)
+
+imdb %>% 
+  gather(
+    "importancia_ator", 
+    "nome_ator", 
+    starts_with("ator")
+  )
+
+View(imdb_gather)
 
 # spread ------------------------------------------------------------------
 
